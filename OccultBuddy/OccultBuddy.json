@@ -1,0 +1,11 @@
+{
+  "Author": "FlawedBliss",
+  "Name": "OccultBuddy",
+  "Punchline": "Finding Treasure Coffers made easy.",
+  "Description": "Shows nearby Treasure Coffers in Occult Crescent.",
+  "ApplicableVersion": "any",
+  "Tags": [
+      "Occult Crescent",
+      "Field Operation"
+  ]
+}
