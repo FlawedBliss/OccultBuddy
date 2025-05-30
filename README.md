@@ -4,4 +4,5 @@ OccultBuddy is an early stages plugin to make life inside Occult Crescent easier
 ## Future Plans
 - crowdsource & mark possible pot treasure coffer locations
 - crowdsource & mark possible lucky carrot locations
+- sync available coffers with players in the same instance
 - more 
