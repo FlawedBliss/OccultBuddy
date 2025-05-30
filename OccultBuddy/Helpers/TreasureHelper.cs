@@ -3,6 +3,8 @@ using System.Linq;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Common.Math;
+using Lumina.Data.Parsing;
 using OccultBuddy.extensions;
 using OccultBuddy.models;
 
@@ -23,20 +25,35 @@ public class TreasureHelper
     private TreasureHelper() { }
     public HashSet<CachedTreasure> TreasureCache { get; private set; } = new();
 
+    
+    private bool IsTreasureInRange(CachedTreasure treasure)
+    {
+        if (!Plugin.PlayerInValidZone()) return false;
+        return MathHelper.Distance2D(treasure.Pos, Plugin.ClientState.LocalPlayer!.Position) < updateRange;
+    }
+    private bool IsLuckyCarrot(CachedTreasure treasure)
+    {
+        return treasure.dataId == 2010139;
+    }
+    
+    private bool IsTargetable(ulong gameObjectId)
+    {
+        return Plugin.ObjectTable.SearchById(gameObjectId)?.IsTargetable ?? false;
+    }
+    
     public void UpdateNearbyTreasures(IFramework framework)
     {
         if (!Plugin.PlayerInValidZone()) return;
         bool resetMarkers = false;
-        // if we're in a valid zone this should not be null
-        var playerPos = Plugin.ClientState.LocalPlayer!.Position;
         // remove treasures that are loaded but not targetable - they have been picked up
         // exception for Lucky Carrots (dataId 2010139) which are not targetable but should not be removed
-        var removed1 =
-            TreasureCache.RemoveWhere(obj => MathHelper.Distance2D(obj.Pos, playerPos) < updateRange &&
-                                             (obj.dataId != 2010139 && (!Plugin.ObjectTable.SearchById(obj.GameObjectId)?.IsTargetable ?? false)));
+        var removed1 = TreasureCache.RemoveWhere(obj => IsTreasureInRange(obj) && 
+                                                        !IsTargetable(obj.GameObjectId) &&
+                                                        !IsLuckyCarrot(obj));
+
         if (removed1 > 0) Plugin.Log.Debug($"Removed {removed1} treasures from cache that are not targetable.");
         // remove treasures that are in range but not in the object table - they have despawned
-        var removed2 = TreasureCache.RemoveWhere(obj => MathHelper.Distance2D(obj.Pos, playerPos) < updateRange &&
+        var removed2 = TreasureCache.RemoveWhere(obj => IsTreasureInRange(obj) &&
                                                         Plugin.ObjectTable.SearchById(obj.GameObjectId) is null);
         if (removed2 > 0)
             Plugin.Log.Debug($"Removed {removed1} treasures from cache that are not in the object table.");
@@ -47,12 +64,14 @@ public class TreasureHelper
         }
 
         var treasures =
-            Plugin.ObjectTable.Where(o => o.ObjectKind == ObjectKind.Treasure &&
-                                          TreasureCache.All(c => c.GameObjectId != o.GameObjectId) &&
-                                          o.IsTargetable);
+            Plugin.ObjectTable.Where(o => o.ObjectKind == ObjectKind.Treasure)
+                  .Where(o => TreasureCache.All(c => c.GameObjectId != o.GameObjectId))
+                  .Where(o => o.IsTargetable);
+        
         var carrots = Plugin.ObjectTable.OfType<IEventObj>()
-                            .Where(o => o.DataId == 2010139 &&
-                                        TreasureCache.All(c => c.GameObjectId != o.GameObjectId));
+                            .Where(o => o.DataId == 2010139)
+                            .Where(o => TreasureCache.All(c => c.GameObjectId != o.GameObjectId));
+       
         foreach (var treasure in treasures.Concat(carrots))
         {
             resetMarkers = true;
