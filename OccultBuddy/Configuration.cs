@@ -15,7 +15,8 @@ public class Configuration : IPluginConfiguration
     
     public bool ShowChatMessageOnTreasureFound { get; set; } = true;
     
-    // the below exist just to make saving less cumbersome
+    public bool EnableCrowdSourcing { get; set; } = false;
+    
     public void Save()
     {
         Plugin.PluginInterface.SavePluginConfig(this);

@@ -54,10 +54,14 @@ public class TreasureHelper
             {
                 MessageHelper.ShowTreasureFoundToast(treasure);
             }
-
             if (Plugin.Configuration.ShowChatMessageOnTreasureFound)
             {
                 MessageHelper.ShowTreasureFoundMessage(treasure);
+            }
+            
+            if(Plugin.Configuration.EnableCrowdSourcing)
+            {
+                CrowdSourceHelper.Instance.SubmitTreasureCoffer(treasure);
             }
         }
 

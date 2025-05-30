@@ -38,6 +38,22 @@ public class ConfigWindow : Window, IDisposable
             Plugin.Configuration.ShowChatMessageOnTreasureFound = showChatMessageOnTreasureFound;
             Plugin.Configuration.Save();
         }
+        
+        var enableCrowdSourcing = Plugin.Configuration.EnableCrowdSourcing;
+        if(ImGui.Checkbox("Enable crowd sourcing for treasure coffers", ref enableCrowdSourcing))
+        {
+            Plugin.Configuration.EnableCrowdSourcing = enableCrowdSourcing;
+            Plugin.Configuration.Save();
+        }
+
+        ImGui.SameLine();
+        ImGui.TextUnformatted("(?)");
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.BeginTooltip();
+            ImGui.TextUnformatted("Enabling crowd sourcing will send information about treasure coffers you find back to the developer.");
+            ImGui.TextUnformatted("Only data related to ingame objects is sent, no information that is linked to your game or character in any way.");
+        }
     }
 
     public void Dispose()
