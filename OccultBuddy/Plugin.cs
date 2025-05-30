@@ -50,8 +50,6 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += DrawUI;
         
 
-        // Adds another button that is doing the same but for the main ui of the plugin
-        PluginInterface.UiBuilder.OpenMainUi += ToggleDebugUI;
         PluginInterface.UiBuilder.OpenConfigUi += ConfigWindow.Toggle;
         IFramework.Update += TreasureHelper.Instance.UpdateNearbyTreasures;
     }
