@@ -41,6 +41,8 @@ public class DebugWindow : Window, IDisposable
         ImGui.TextUnformatted($"Cached Treasures: {TreasureHelper.Instance.TreasureCache.Count}");
         DrawCachedTreasureTable(TreasureHelper.Instance.TreasureCache);
         ImGui.Separator();
+        DrawGameObjectTable(Plugin.ObjectTable.Where(obj => MathHelper.Instance.Distance2D(obj.Position, Plugin.ClientState.LocalPlayer?.Position ?? Vector3.Zero) < 10));
+        ImGui.Separator();
         var target = Plugin.ClientState.LocalPlayer?.TargetObject;
         if (target is not null)
         {
@@ -49,6 +51,8 @@ public class DebugWindow : Window, IDisposable
             ImGui.TextUnformatted($"{target.ObjectKind}");
             ImGui.TextUnformatted($"{target.GetType()}");
         }
+        
+            
     }
 
     
