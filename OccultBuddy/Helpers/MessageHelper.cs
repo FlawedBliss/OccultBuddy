@@ -16,8 +16,8 @@ public class MessageHelper
                                           xz.X, xz.Y);
         var kind = treasure.DataId switch
         {
-            >= 1800 and < 1900 => "Bronze", //this is a guess
-            >= 1700 and < 1800 => "Silver", //this too 
+            >= 1798 and < 1900 => "Bronze", //this is a guess
+            >= 1700 and < 1798 => "Silver", //this too 
             _ => "Unknown"
         };
         return new SeStringBuilder()
