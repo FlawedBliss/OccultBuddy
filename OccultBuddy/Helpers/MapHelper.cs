@@ -9,16 +9,16 @@ public class MapHelper
     public static MapHelper Instance => _instance ??= new MapHelper();
     private MapHelper() { }
 
-    public unsafe void PlaceChestMapMarker(Vector3 pos)
+    public unsafe void PlaceChestMapMarker(Vector3 pos, uint icon)
     {
-        if (!AgentMap.Instance()->AddMapMarker(pos, 60354))
+        if (!AgentMap.Instance()->AddMapMarker(pos, icon))
         {
             Plugin.Log.Error("Failed to place map marker for chest at position: " + pos);
         }
     }
-    public unsafe void PlaceChestMiniMapMarker(Vector3 pos)
+    public unsafe void PlaceChestMiniMapMarker(Vector3 pos, uint icon)
     {
-        if (!AgentMap.Instance()->AddMiniMapMarker(pos, 60354))
+        if (!AgentMap.Instance()->AddMiniMapMarker(pos, icon))
         {
             Plugin.Log.Error("Failed to place minimap marker for chest at position: " + pos);
         }

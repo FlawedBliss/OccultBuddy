@@ -3,12 +3,13 @@ using FFXIVClientStructs.FFXIV.Common.Math;
 
 namespace OccultBuddy.models;
 
-public record CachedTreasure(ulong gameObjectId, Vector3 pos)
+public record CachedTreasure(ulong gameObjectId, Vector3 pos, ulong dataId)
 {
     
     public ulong GameObjectId { get; } = gameObjectId;
     public Vector3 Pos { get; } = pos;
-    
+
+    private ulong DataId { get; } = dataId;
     
     public override int GetHashCode()
     {

@@ -1,6 +1,8 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
+using OccultBuddy.extensions;
+
 namespace OccultBuddy.Helpers;
 
 public class MessageHelper
@@ -14,15 +16,9 @@ public class MessageHelper
         var xz = treasure.GetMapCoordinates();
         var link = SeString.CreateMapLink(Plugin.ClientState.TerritoryType, Plugin.ClientState.MapId,
                                           xz.X, xz.Y);
-        var kind = treasure.DataId switch
-        {
-            >= 1798 and < 1900 => "Bronze", //this is a guess
-            >= 1700 and < 1798 => "Silver", //this too 
-            _ => "Unknown"
-        };
         return new SeStringBuilder()
                       .AddUiForeground(570)
-                      .AddText($"{kind} Treasure Coffer: ")
+                      .AddText($"{TreasureHelper.GetTypeFromDataId(treasure.DataId).GetFriendlyName()}: ")
                       .AddUiGlowOff()
                       .AddUiForegroundOff()
                       .BuiltString
