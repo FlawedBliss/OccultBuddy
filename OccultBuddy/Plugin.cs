@@ -57,10 +57,9 @@ public sealed class Plugin : IDalamudPlugin
     public void Dispose()
     {
         WindowSystem.RemoveAllWindows();
-
         DebugWindow.Dispose();
-
         CommandManager.RemoveHandler(CommandName);
+        IFramework.Update -= TreasureHelper.Instance.UpdateNearbyTreasures;
     }
 
     private void OnCommand(string command, string args)
