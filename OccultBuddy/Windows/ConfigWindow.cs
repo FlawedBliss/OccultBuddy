@@ -1,6 +1,7 @@
 ﻿using System;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using OccultBuddy.Helpers;
 
 namespace OccultBuddy.Windows;
 
@@ -53,6 +54,17 @@ public class ConfigWindow : Window, IDisposable
             ImGui.BeginTooltip();
             ImGui.TextUnformatted("Enabling crowd sourcing will send information about treasure coffers you find back to the developer.");
             ImGui.TextUnformatted("Only data related to ingame objects is sent, no information that is linked to your game or character in any way.");
+        }
+        
+        if(ImGui.Button("Add Markers for all Treasures"))
+        {
+            TreasureHelper.Instance.AddAllMarkers();
+        }
+        ImGui.SameLine();
+        ImGui.Spacing();
+        if(ImGui.Button("Add Markers for found Treasures"))
+        {
+            TreasureHelper.Instance.RedrawMarkers();
         }
     }
 

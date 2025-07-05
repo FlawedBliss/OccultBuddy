@@ -53,7 +53,7 @@ public class CrowdSourceHelper
         try
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://kimi.trashprojects.moe/treasure_coffer");
-            request.Content = new StringContent(JsonConvert.SerializeObject(data, new JsonSerializerSettings{ContractResolver = new DefaultContractResolver {NamingStrategy = new SnakeCaseNamingStrategy()}}), System.Text.Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(data, JsonHelper.Instance.Settings), System.Text.Encoding.UTF8, "application/json");
             var response = await httpClient.SendAsync(request);
             httpClient.Dispose();
             if (!response.IsSuccessStatusCode)

@@ -8,4 +8,9 @@
     <IsPackable>false</IsPackable>
     <AssemblyVersion>1.0.0.2</AssemblyVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\treasure_coffer.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

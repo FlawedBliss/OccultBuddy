@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Math;
-using Lumina.Data.Parsing;
+using Newtonsoft.Json;
 using OccultBuddy.extensions;
 using OccultBuddy.models;
 
@@ -22,7 +23,27 @@ public class TreasureHelper
     private readonly MapHelper MapHelper = MapHelper.Instance;
     private readonly MessageHelper MessageHelper = MessageHelper.Instance;
 
-    private TreasureHelper() { }
+    private readonly List<CachedTreasure> knownTreasures = new();
+
+    private TreasureHelper()
+    {
+        var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("OccultBuddy.Data.treasure_coffer.json");
+        if (stream is null)
+        {
+            Plugin.Log.Error("Could not find embedded relic data JSON file.");
+        }
+        else
+        {
+            using var reader = new StreamReader(stream);
+            var json = reader.ReadToEnd();
+            var storedTreasure = JsonConvert.DeserializeObject<List<KnownTreasure>>(json, JsonHelper.Instance.Settings)!;
+            foreach (var obj in storedTreasure)
+            {
+                knownTreasures.Add(new CachedTreasure(0, new(obj.PositionX, obj.PositionY, obj.PositionZ), obj.DataId));
+            }
+        }
+        
+    }
     public HashSet<CachedTreasure> TreasureCache { get; private set; } = new();
 
     
@@ -96,22 +117,27 @@ public class TreasureHelper
 
         if (resetMarkers)
         {
-            MapHelper.ResetMapMarkers();
-            MapHelper.ResetMiniMapMarkers();
-            if (Plugin.Configuration.AutoAddTreasureMapMarkers || Plugin.Configuration.AutoAddTreasureMiniMapMarkers)
-            {
-                foreach (var treasure in TreasureCache)
-                {
-                    if (Plugin.Configuration.AutoAddTreasureMapMarkers)
-                    {
-                        MapHelper.PlaceChestMapMarker(treasure.Pos, GetTypeFromDataId(treasure.dataId).GetMapIconId());
-                    }
+            RedrawMarkers();
+        }
+    }
 
-                    if (Plugin.Configuration.AutoAddTreasureMiniMapMarkers)
-                    {
-                        MapHelper.PlaceChestMiniMapMarker(treasure.Pos,
-                                                          GetTypeFromDataId(treasure.dataId).GetMapIconId());
-                    }
+    public void RedrawMarkers()
+    {
+        MapHelper.ResetMapMarkers();
+        MapHelper.ResetMiniMapMarkers();
+        if (Plugin.Configuration.AutoAddTreasureMapMarkers || Plugin.Configuration.AutoAddTreasureMiniMapMarkers)
+        {
+            foreach (var treasure in TreasureCache)
+            {
+                if (Plugin.Configuration.AutoAddTreasureMapMarkers)
+                {
+                    MapHelper.PlaceChestMapMarker(treasure.Pos, GetTypeFromDataId(treasure.dataId).GetMapIconId());
+                }
+
+                if (Plugin.Configuration.AutoAddTreasureMiniMapMarkers)
+                {
+                    MapHelper.PlaceChestMiniMapMarker(treasure.Pos,
+                                                      GetTypeFromDataId(treasure.dataId).GetMapIconId());
                 }
             }
         }
@@ -126,5 +152,14 @@ public class TreasureHelper
             2010139 => TreasureType.LuckyCarrot,
             _ => TreasureType.Unknown
         };
+    }
+
+    public void AddAllMarkers()
+    {
+        foreach (var data in knownTreasures)
+        {
+            TreasureCache.Add(data);
+        }
+        RedrawMarkers();
     }
 }

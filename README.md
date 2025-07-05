@@ -1,8 +1,2 @@
 # OccultBuddy
-OccultBuddy is an early stages plugin to make life inside Occult Crescent easier. It will notify you about nearby Treasure Coffers and mark them on your map.
-
-## Future Plans
-- crowdsource & mark possible pot treasure coffer locations
-- crowdsource & mark possible lucky carrot locations
-- sync available coffers with players in the same instance
-- more 
+OccultBuddy locates nearby treasure coffers and marks them on your map. If you are looking for more features to help with Occult Crescent, check out EurekaLinker instead.  
