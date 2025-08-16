@@ -6,7 +6,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using OccultBuddy.Helpers;
 using OccultBuddy.models;
 
